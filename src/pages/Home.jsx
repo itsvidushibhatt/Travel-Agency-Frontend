@@ -5,18 +5,17 @@ import PackageCard from '../components/PackageCard';
 
 const Home = () => {
   const [packages, setPackages] = useState([]);
-  const [loading, setLoading] = useState(true);  // New state for loading
-  const [error, setError] = useState(null);  // New state for error handling
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchPackages = async () => {
       try {
-        // Log the API URL to ensure it's correct
-        console.log('API URL:', process.env.REACT_APP_API_URL);
+        console.log('API URL:', process.env.REACT_APP_API_URL); // Ensure the API URL is correct
 
         // Perform the API request
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/packages`);
-
+        
         // Log the response to verify the data format
         console.log('API Response:', response.data);
 
@@ -24,12 +23,11 @@ const Home = () => {
         if (Array.isArray(response.data)) {
           setPackages(response.data);
         } else {
-          console.error('Invalid data format: expected an array');
-          setError('Invalid data format');
+          throw new Error('Invalid data format: expected an array');
         }
       } catch (error) {
         console.error('Error fetching packages:', error);
-        setError('Error fetching packages');
+        setError(error.message || 'An error occurred');
       } finally {
         setLoading(false); // Set loading to false after the fetch attempt
       }
@@ -38,7 +36,6 @@ const Home = () => {
     fetchPackages();
   }, []);
 
-  // Render loading indicator or error message
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -64,16 +61,12 @@ const Home = () => {
         <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">Available Packages</h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {Array.isArray(packages) && packages.length === 0 ? (
+          {packages.length === 0 ? (
             <p className="col-span-full text-center text-lg md:text-xl font-semibold text-gray-600">
               No packages available at the moment. Please check back later!
             </p>
           ) : (
-            Array.isArray(packages) ? (
-              packages.map((pkg) => <PackageCard key={pkg._id} pkg={pkg} />)
-            ) : (
-              <p>Error: Invalid data format.</p> // Handle unexpected response format
-            )
+            packages.map((pkg) => <PackageCard key={pkg._id} pkg={pkg} />)
           )}
         </div>
       </div>
