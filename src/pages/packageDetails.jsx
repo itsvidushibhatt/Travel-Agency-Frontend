@@ -99,7 +99,6 @@ const PackageDetails = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      <Navbar />
       <div className="container mx-auto mt-8 p-4">
         {/* Package Info */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
