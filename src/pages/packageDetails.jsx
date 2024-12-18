@@ -63,7 +63,12 @@ const PackageDetails = () => {
       email: form.email,
       phone: form.phone,
       travelers: form.travelers,
-      packageDetails: { title: pkg.title, price: pkg.price },
+      packageDetails: {
+        title: pkg.title,
+        price: pkg.price,
+        date: pkg.date,
+        time: pkg.time,
+      },
     };
 
     try {
