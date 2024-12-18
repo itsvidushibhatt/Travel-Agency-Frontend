@@ -17,7 +17,10 @@ const Home = () => {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/packages`);
         
         // Log the full response to verify its structure
-        console.log('API Response:', response);
+        console.log('Full API Response:', response);
+
+        // Log the response data to see if it's the format you expect
+        console.log('Response Data:', response.data);
 
         // Check if the response contains an array in `response.data`
         if (Array.isArray(response.data)) {
@@ -26,7 +29,8 @@ const Home = () => {
           // If the data is wrapped in a structure like { packages: [...] }
           setPackages(response.data.packages);
         } else {
-          throw new Error('Invalid data format: expected an array or an object with a `packages` array');
+          // More detailed error message
+          throw new Error(`Invalid data format. Received: ${JSON.stringify(response.data)}`);
         }
       } catch (error) {
         console.error('Error fetching packages:', error);
