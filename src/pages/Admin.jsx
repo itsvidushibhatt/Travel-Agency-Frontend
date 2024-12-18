@@ -18,7 +18,7 @@ const Admin = () => {
     const fetchBookings = async () => {
       try {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/admin/bookings`);
-        setBookings(response.data);
+        setBookings(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
         console.error('Error fetching bookings:', error.message);
       }
@@ -27,7 +27,7 @@ const Admin = () => {
     const fetchPackages = async () => {
       try {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/packages`);
-        setPackages(response.data);
+        setPackages(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
         console.error('Error fetching packages:', error.message);
       }
@@ -101,14 +101,20 @@ const Admin = () => {
             </tr>
           </thead>
           <tbody>
-            {bookings.map((booking) => (
-              <tr key={booking._id} className="hover:bg-gray-100">
-                <td className="border p-2">{booking.name}</td>
-                <td className="border p-2">{booking.packageId?.title || 'N/A'}</td>
-                <td className="border p-2">{booking.email}</td>
-                <td className="border p-2">{booking.phone}</td>
+            {(Array.isArray(bookings) && bookings.length > 0) ? (
+              bookings.map((booking) => (
+                <tr key={booking._id} className="hover:bg-gray-100">
+                  <td className="border p-2">{booking.name}</td>
+                  <td className="border p-2">{booking.packageId?.title || 'N/A'}</td>
+                  <td className="border p-2">{booking.email}</td>
+                  <td className="border p-2">{booking.phone}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4" className="text-center">No bookings available</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
@@ -177,24 +183,28 @@ const Admin = () => {
       <div className="mt-8">
         <h3 className="text-lg font-bold mb-4">Existing Packages</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {packages.map((pkg) => (
-            <div key={pkg._id} className="border p-4 rounded shadow-md hover:shadow-lg transition-all">
-              <img src={pkg.image} alt={pkg.title} className="w-full h-48 object-cover rounded" />
-              <h3 className="text-lg font-bold mt-2">{pkg.title}</h3>
-              <p className="text-gray-600 mt-1">{pkg.description}</p>
-              <p className="text-green-600 mt-1">Price: ${pkg.price}</p>
-              <p className="text-blue-500 mt-1">Date: {pkg.date || 'N/A'}</p>
-              <p className="text-blue-500 mt-1">Time: {pkg.time || 'N/A'}</p>
-              <div className="mt-4 flex justify-between">
-                <button onClick={() => handleEditPackage(pkg)} className="bg-yellow-500 text-white py-1 px-3 rounded">
-                  Edit
-                </button>
-                <button onClick={() => handleDeletePackage(pkg._id)} className="bg-red-500 text-white py-1 px-3 rounded">
-                  Delete
-                </button>
+          {(Array.isArray(packages) && packages.length > 0) ? (
+            packages.map((pkg) => (
+              <div key={pkg._id} className="border p-4 rounded shadow-md hover:shadow-lg transition-all">
+                <img src={pkg.image} alt={pkg.title} className="w-full h-48 object-cover rounded" />
+                <h3 className="text-lg font-bold mt-2">{pkg.title}</h3>
+                <p className="text-gray-600 mt-1">{pkg.description}</p>
+                <p className="text-green-600 mt-1">Price: ${pkg.price}</p>
+                <p className="text-blue-500 mt-1">Date: {pkg.date || 'N/A'}</p>
+                <p className="text-blue-500 mt-1">Time: {pkg.time || 'N/A'}</p>
+                <div className="mt-4 flex justify-between">
+                  <button onClick={() => handleEditPackage(pkg)} className="bg-yellow-500 text-white py-1 px-3 rounded">
+                    Edit
+                  </button>
+                  <button onClick={() => handleDeletePackage(pkg._id)} className="bg-red-500 text-white py-1 px-3 rounded">
+                    Delete
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p>No packages available</p>
+          )}
         </div>
       </div>
     </div>
@@ -202,3 +212,4 @@ const Admin = () => {
 };
 
 export default Admin;
+

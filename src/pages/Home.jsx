@@ -9,8 +9,20 @@ const Home = () => {
   useEffect(() => {
     const fetchPackages = async () => {
       try {
+        // Log the API URL to ensure it's correct
+        console.log('API URL:', process.env.REACT_APP_API_URL);
+
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/packages`);
-        setPackages(response.data);
+        
+        // Log the response to verify the data format
+        console.log('API Response:', response.data);
+
+        // Check if the response is an array, then set the state
+        if (Array.isArray(response.data)) {
+          setPackages(response.data);
+        } else {
+          console.error('Invalid data format: expected an array');
+        }
       } catch (error) {
         console.error('Error fetching packages:', error);
       }
@@ -21,7 +33,6 @@ const Home = () => {
 
   return (
     <div className="bg-gradient-to-r from-green-400 to-blue-500 min-h-screen">
-    
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white py-16 md:py-20 lg:py-24 text-center">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 leading-tight">
@@ -37,12 +48,16 @@ const Home = () => {
         <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">Available Packages</h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {packages.length === 0 ? (
+          {Array.isArray(packages) && packages.length === 0 ? (
             <p className="col-span-full text-center text-lg md:text-xl font-semibold text-gray-600">
               No packages available at the moment. Please check back later!
             </p>
           ) : (
-            packages.map((pkg) => <PackageCard key={pkg._id} pkg={pkg} />)
+            Array.isArray(packages) ? (
+              packages.map((pkg) => <PackageCard key={pkg._id} pkg={pkg} />)
+            ) : (
+              <p>Error: Invalid data format.</p> // Handle unexpected response format
+            )
           )}
         </div>
       </div>
