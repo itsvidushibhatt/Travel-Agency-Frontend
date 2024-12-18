@@ -12,16 +12,18 @@ const Home = () => {
     const fetchPackages = async () => {
       try {
         console.log('API URL:', process.env.REACT_APP_API_URL); // Ensure the API URL is correct
-
+  
         // Perform the API request
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/packages`);
         
-        // Log the full response to verify its structure
-        console.log('Full API Response:', response);
-
+        // Log full response to inspect status and headers
+        console.log('Full Response:', response);
+        console.log('Response Headers:', response.headers);
+        console.log('Response Status:', response.status);
+  
         // Log the response data to see if it's the format you expect
         console.log('Response Data:', response.data);
-
+  
         // Check if the response contains an array in `response.data`
         if (Array.isArray(response.data)) {
           setPackages(response.data);
@@ -29,7 +31,6 @@ const Home = () => {
           // If the data is wrapped in a structure like { packages: [...] }
           setPackages(response.data.packages);
         } else {
-          // More detailed error message
           throw new Error(`Invalid data format. Received: ${JSON.stringify(response.data)}`);
         }
       } catch (error) {
@@ -39,9 +40,10 @@ const Home = () => {
         setLoading(false); // Set loading to false after the fetch attempt
       }
     };
-
+  
     fetchPackages();
   }, []);
+  
 
   if (loading) {
     return <div>Loading...</div>;
