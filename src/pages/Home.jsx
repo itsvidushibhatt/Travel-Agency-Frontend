@@ -5,6 +5,8 @@ import PackageCard from '../components/PackageCard';
 
 const Home = () => {
   const [packages, setPackages] = useState([]);
+  const [loading, setLoading] = useState(true);  // New state for loading
+  const [error, setError] = useState(null);  // New state for error handling
 
   useEffect(() => {
     const fetchPackages = async () => {
@@ -12,8 +14,9 @@ const Home = () => {
         // Log the API URL to ensure it's correct
         console.log('API URL:', process.env.REACT_APP_API_URL);
 
+        // Perform the API request
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/packages`);
-        
+
         // Log the response to verify the data format
         console.log('API Response:', response.data);
 
@@ -22,14 +25,27 @@ const Home = () => {
           setPackages(response.data);
         } else {
           console.error('Invalid data format: expected an array');
+          setError('Invalid data format');
         }
       } catch (error) {
         console.error('Error fetching packages:', error);
+        setError('Error fetching packages');
+      } finally {
+        setLoading(false); // Set loading to false after the fetch attempt
       }
     };
 
     fetchPackages();
   }, []);
+
+  // Render loading indicator or error message
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div className="bg-gradient-to-r from-green-400 to-blue-500 min-h-screen">
