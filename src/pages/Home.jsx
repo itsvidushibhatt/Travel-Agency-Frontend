@@ -11,10 +11,11 @@ const Home = () => {
   useEffect(() => {
     const fetchPackages = async () => {
       try {
-        console.log('API URL:', process.env.REACT_APP_API_URL); // Ensure the API URL is correct
-  
+        const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+        console.log('API URL:', apiBaseUrl);
+
         // Perform the API request
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/packages`);
+        const response = await axios.get(`${apiBaseUrl}/api/packages`);
         
         // Log full response to inspect status and headers
         console.log('Full Response:', response);
@@ -43,7 +44,6 @@ const Home = () => {
   
     fetchPackages();
   }, []);
-  
 
   if (loading) {
     return <div>Loading...</div>;

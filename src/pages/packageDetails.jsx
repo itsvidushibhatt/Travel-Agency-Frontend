@@ -15,17 +15,18 @@ const PackageDetails = () => {
   });
   const [totalPrice, setTotalPrice] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   // Fetch package details
   useEffect(() => {
     const fetchPackage = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/packages/${id}`);
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/packages/${id}`);
         setPkg(response.data);
-        setTotalPrice(response.data.price);
+        setTotalPrice(response.data.price); // initial total price
       } catch (error) {
         console.error('Error fetching package:', error.message);
-        alert('Failed to load package details. Please refresh the page.');
+        setError('Failed to load package details. Please try again later.');
       }
     };
     fetchPackage();
@@ -41,7 +42,7 @@ const PackageDetails = () => {
     e.preventDefault();
     try {
       const bookingData = { ...form, packageId: id };
-      await axios.post(`${process.env.REACT_APP_API_URL}/api/bookings`, bookingData);
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/bookings`, bookingData);
       alert('Booking successful! 🎉');
       setForm({ name: '', email: '', phone: '', travelers: 1, specialRequests: '' });
     } catch (error) {
@@ -68,7 +69,7 @@ const PackageDetails = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/packages/invoice`,
+        `${import.meta.env.VITE_API_URL}/api/packages/invoice`,
         invoiceData,
         { responseType: 'blob' }
       );
@@ -87,10 +88,13 @@ const PackageDetails = () => {
     }
   };
 
+  if (error) return <div className="text-center mt-8 text-red-500">{error}</div>;
+
   if (!pkg) return <div className="text-center mt-8">Loading...</div>;
 
   return (
     <div className="bg-gray-50 min-h-screen">
+      <Navbar />
       <div className="container mx-auto mt-8 p-4">
         {/* Package Info */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -168,9 +172,7 @@ const PackageDetails = () => {
           <button
             onClick={handleGenerateInvoice}
             disabled={loading}
-            className={`w-full mt-4 ${
-              loading ? 'bg-gray-400' : 'bg-green-500 hover:bg-green-600'
-            } text-white font-bold py-2 px-4 rounded`}
+            className={`w-full mt-4 ${loading ? 'bg-gray-400' : 'bg-green-500 hover:bg-green-600'} text-white font-bold py-2 px-4 rounded`}
           >
             {loading ? 'Generating Invoice...' : 'Generate Invoice'}
           </button>

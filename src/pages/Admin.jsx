@@ -17,7 +17,7 @@ const Admin = () => {
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/admin/bookings`);
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/bookings`);
         setBookings(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
         console.error('Error fetching bookings:', error.message);
@@ -26,7 +26,7 @@ const Admin = () => {
 
     const fetchPackages = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/packages`);
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/packages`);
         setPackages(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
         console.error('Error fetching packages:', error.message);
@@ -40,7 +40,7 @@ const Admin = () => {
   const handleAddPackage = async () => {
     const packageData = { ...form, price: Number(form.price) };
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/admin/packages`, packageData);
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/packages`, packageData);
       setPackages([...packages, response.data]);
       setForm({ title: '', description: '', price: '', image: '', date: '', time: '' });
     } catch (error) {
@@ -50,7 +50,7 @@ const Admin = () => {
 
   const handleDeletePackage = async (id) => {
     try {
-      await axios.delete(`${process.env.REACT_APP_API_URL}/api/admin/packages/${id}`);
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/packages/${id}`);
       setPackages(packages.filter((pkg) => pkg._id !== id));
     } catch (error) {
       console.error('Error deleting package:', error.message);
@@ -74,7 +74,7 @@ const Admin = () => {
 
     const updatedData = { ...form, price: Number(form.price) };
     try {
-      const response = await axios.put(`${process.env.REACT_APP_API_URL}/api/admin/packages/${editingPackage._id}`, updatedData);
+      const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/packages/${editingPackage._id}`, updatedData);
 
       setPackages(packages.map((pkg) => (pkg._id === editingPackage._id ? response.data : pkg)));
       setEditingPackage(null);
@@ -212,4 +212,3 @@ const Admin = () => {
 };
 
 export default Admin;
-
